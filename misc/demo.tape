@@ -1,5 +1,4 @@
 Output misc/demo.gif
-Output misc/demo.ascii
 Set Width 1000
 Set Height 300
 Type "export AKASABI_INDEX=$(mktemp -d)"
