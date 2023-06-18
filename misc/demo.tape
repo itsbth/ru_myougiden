@@ -1,13 +1,17 @@
 Output misc/demo.gif
-Set Width 800
+Output misc/demo.ascii
+Set Width 1000
 Set Height 300
-Hide
-Type "export PATH=$PWD/target/release:$PATH"
+Type "export AKASABI_INDEX=$(mktemp -d)"
 Enter
-Type "clear"
+Type "cargo run --quiet -- index --path testdata/JMdict_e_test.gz"
 Enter
-Show
-Type "akasabi search akasabi"
+# NB: vhs doesn't wait for the process to exit, so we need to sleep
+Sleep 1s
+Type "cargo run --quiet -- search akasabi"
 Sleep 500ms
 Enter
 Sleep 5s
+Hide
+Type "rm -r $AKASABI_INDEX"
+Enter
