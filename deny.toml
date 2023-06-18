@@ -101,6 +101,8 @@ unlicensed = "deny"
 # List of explicitly allowed licenses
 # See https://spdx.org/licenses/ for list of possible licenses
 # [possible values: any SPDX 3.11 short identifier (+ optional exception)].
+# NOTE: Currently redundant as we allow osi-approved and fsf-free licenses
+# below.
 allow = [
     "MIT",
     "Apache-2.0",
@@ -117,14 +119,14 @@ deny = [
     #"Nokia",
 ]
 # Lint level for licenses considered copyleft
-copyleft = "warn"
+copyleft = "deny"
 # Blanket approval or denial for OSI-approved or FSF Free/Libre licenses
 # * both - The license will be approved if it is both OSI-approved *AND* FSF
 # * either - The license will be approved if it is either OSI-approved *OR* FSF
 # * osi-only - The license will be approved if is OSI-approved *AND NOT* FSF
 # * fsf-only - The license will be approved if is FSF *AND NOT* OSI-approved
 # * neither - This predicate is ignored and the default lint level is used
-allow-osi-fsf-free = "neither"
+allow-osi-fsf-free = "both"
 # Lint level used when no other predicates are matched
 # 1. License isn't in the allow or deny lists
 # 2. License isn't copyleft
@@ -266,8 +268,8 @@ allow-git = []
 
 [sources.allow-org]
 # 1 or more github.com organizations to allow git sources for
-github = [""]
+# github = [""]
 # 1 or more gitlab.com organizations to allow git sources for
-gitlab = [""]
+# gitlab = [""]
 # 1 or more bitbucket.org organizations to allow git sources for
-bitbucket = [""]
+# bitbucket = [""]
