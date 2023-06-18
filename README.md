@@ -22,6 +22,22 @@ Once the index is created, you can search it with `akasabi search <query>`. The 
 
 [^1]: TODO: Verify that this is actually the case.
 
+## Dependencies
+
+I hope to keep the dependency list short enought that maintaining this list is feasible. Currently, the dependencies are:
+
+- clap: CLI argument parsing
+- yansi: ANSI color codes
+- tantivy: core search functionality
+- env_logger: set log levels by environment variable
+- anyhow: error handling
+- flate2: decompress gzipped files (jmdict is distributed gzipped)
+- itertools: iterator utilities
+- reqwest: HTTP client for downloading jmdict (currently not fully implemented)
+- wana_kana: romaji <-> kana conversion
+- xml: XML parsing
+- tempfile: temporary file creation (used in tests only)
+
 ## License
 
 Licensed under either of
