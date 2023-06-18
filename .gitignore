@@ -1,0 +1,9 @@
+/target
+
+# test folders
+/tmp
+
+# dictionary
+JMdict*.gz
+# don't include the test dictionary
+!testdata/JMdict_e_test.gz
