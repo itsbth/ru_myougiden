@@ -15,3 +15,5 @@ Sleep 5s
 Hide
 Type "rm -r $AKASABI_INDEX"
 Enter
+# Sleep 100ms to make sure it isn't killed before the rm finishes
+Sleep 100ms

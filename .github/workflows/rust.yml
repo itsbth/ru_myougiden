@@ -28,6 +28,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      # We need to build it, otherwise the `cargo run` will take way too long,
+      # breaking the vhs script
+      # TODO: Move this to the build job if we need to build it anyway?
+      - name: Build
+        run: cargo build --verbose
       - uses: charmbracelet/vhs-action@v1
         with:
           path: misc/demo.tape
