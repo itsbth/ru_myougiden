@@ -1,3 +1,4 @@
+Set Theme synthwave-everything
 Output misc/demo.gif
 Set Width 1000
 Set Height 300

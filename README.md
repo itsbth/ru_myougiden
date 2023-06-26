@@ -36,6 +36,8 @@ I hope to keep the dependency list short enought that maintaining this list is f
 - reqwest: HTTP client for downloading jmdict (currently not fully implemented)
 - wana_kana: romaji <-> kana conversion
 - xml: XML parsing
+- etcetera: get the user data directory (for the default index path)
+- lindera: Japanese morphological analysis/tokenization
 - tempfile: temporary file creation (used in tests only)
 
 ## License

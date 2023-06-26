@@ -7,7 +7,7 @@ use std::fs::File;
 use std::io;
 use std::io::{BufReader, Read, Write};
 use std::path::Path;
-use tantivy::schema::{Schema, INDEXED, STORED, TEXT};
+use tantivy::schema::{Schema, TextFieldIndexing, TextOptions, INDEXED, STORED, TEXT};
 use tantivy::Index;
 use wana_kana::ConvertJapanese;
 use xml::reader::XmlEvent;
@@ -17,14 +17,17 @@ use yansi::Paint;
 pub fn create_schema() -> Schema {
     let mut builder = Schema::builder();
 
-    // We need a split schema, as each entry can have multiple senses, each with multiple glosses.
+    let jp_options = TextOptions::default()
+        .set_indexing_options(TextFieldIndexing::default().set_tokenizer("ja_JP"))
+        .set_stored();
 
     // ent_seq
     builder.add_i64_field("id", INDEXED | STORED);
 
     // entry fields
-    builder.add_text_field("word", TEXT | STORED);
-    builder.add_text_field("reading", TEXT | STORED);
+    builder.add_text_field("word", jp_options.clone());
+    #[allow(clippy::redundant_clone)]
+    builder.add_text_field("reading", jp_options.clone());
     builder.add_text_field("reading_romaji", TEXT | STORED);
 
     // sense fields

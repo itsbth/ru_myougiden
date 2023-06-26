@@ -3,9 +3,13 @@
 use crate::indexer::create_index;
 use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
+use etcetera::choose_app_strategy;
+use etcetera::AppStrategy;
+use etcetera::AppStrategyArgs;
 use itertools::izip;
 use itertools::Itertools;
-use std::path::Path;
+use std::fs::create_dir_all;
+use std::path::PathBuf;
 use tantivy::schema::Schema;
 use tantivy::{DocAddress, Document, Index, Score, Searcher};
 use yansi::{Color, Paint, Style};
@@ -31,7 +35,7 @@ enum ColorArg {
 #[command(author, version, about)]
 struct Args {
     #[clap(short, long, global = true, env = "AKASABI_INDEX")]
-    index: Option<String>,
+    index: Option<PathBuf>,
     #[clap(long, global = true, default_value = "auto")]
     color: ColorArg,
     #[command(subcommand)]
@@ -48,7 +52,12 @@ enum Command {
         create_if_missing: bool,
     },
     Index {
-        #[clap(short, long, help = "Path to JMdict.gz file")]
+        #[clap(
+            short,
+            long,
+            help = "Path to JMdict.gz file",
+            default_value = "JMdict_e.gz"
+        )]
         path: String,
         #[cfg(feature = "http")]
         #[clap(
@@ -95,13 +104,23 @@ fn main() -> Result<()> {
         }
     }
 
-    let index_path = args.index.unwrap_or("./tmp".to_string());
+    let index_path = if let Some(path) = args.index {
+        path
+    } else {
+        let strategy = choose_app_strategy(AppStrategyArgs {
+            app_name: "akasabi".to_string(),
+            top_level_domain: "com".to_string(),
+            author: "itsbth".to_string(),
+        })?;
+        strategy.in_data_dir("index")
+    };
 
     let schema = indexer::create_schema();
 
-    let index = if Path::new(&index_path).join("meta.json").exists() {
+    let index = if index_path.join("meta.json").exists() {
         Index::open_in_dir(&index_path).context("Failed to open index")?
     } else {
+        create_dir_all(index_path.clone()).context("Failed to create index directory")?;
         Index::create_in_dir(&index_path, schema.clone()).context("Failed to create index")?
     };
 
@@ -115,7 +134,7 @@ fn main() -> Result<()> {
 
             for (_score, doc_address) in top_docs {
                 let retrieved_doc = searcher.doc(doc_address)?;
-                print_result(&schema, &retrieved_doc);
+                print_result(&schema, &retrieved_doc, &term);
             }
         }
         Command::Index { path, .. } => {
@@ -158,7 +177,8 @@ fn search(
         None => vec![word, reading, reading_romaji, meaning],
     };
 
-    let query_parser = tantivy::query::QueryParser::for_index(index, fields);
+    let mut query_parser = tantivy::query::QueryParser::for_index(index, fields);
+    query_parser.set_conjunction_by_default();
 
     let query = query_parser.parse_query(term)?;
 
@@ -168,7 +188,7 @@ fn search(
 }
 
 // TODO: Also take query so we can highlight it
-fn print_result(schema: &Schema, document: &Document) {
+fn print_result(schema: &Schema, document: &Document, _term: &str) {
     // entry fields
     let word = schema.get_field("word").unwrap();
     let reading = schema.get_field("reading").unwrap();
@@ -213,6 +233,7 @@ fn print_result(schema: &Schema, document: &Document) {
     // field shares style with pos
     let c_pos = Style::new(Color::Yellow).bold();
     let c_meaning = Style::new(Color::Default).bold();
+    // let c_highlight = Style::new(Color::Red).bold();
     let c_index = Style::new(Color::Green).bold();
 
     if kanji.is_empty() {
