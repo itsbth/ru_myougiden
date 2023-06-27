@@ -12,13 +12,25 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      # two features: http, config
+      # we need to test all combinations of these
+      # TODO: Manually specifying it like this does not scale well
+      matrix:
+        features:
+          - ""
+          - http
+          - config
+          - http,config
+        rust: ["stable", "beta", "nightly"]
 
     steps:
       - uses: actions/checkout@v3
+      - run: rustup override set ${{ matrix.rust }}
       - name: Build
-        run: cargo build --verbose
+        run: cargo build --verbose --features ${{ matrix.features }}
       - name: Run tests
-        run: cargo test --verbose
+        run: cargo test --verbose --features ${{ matrix.features }}
   deny:
     runs-on: ubuntu-latest
     steps:
