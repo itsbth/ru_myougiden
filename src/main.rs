@@ -67,6 +67,7 @@ enum Command {
         )]
         jmdict_url: Option<String>,
     },
+    Info,
 }
 
 fn main() -> Result<()> {
@@ -139,6 +140,15 @@ fn main() -> Result<()> {
         }
         Command::Index { path, .. } => {
             index_(&index, &schema, &path)?;
+        }
+        Command::Info => {
+            // Print program info; ie version and configuration (currently only resolved index path)
+            println!(
+                "akasabi {}{}",
+                Paint::green("v"),
+                Paint::green(env!("CARGO_PKG_VERSION"))
+            );
+            println!("Index path: {}", Paint::blue(index_path.to_str().unwrap()));
         }
     }
 
