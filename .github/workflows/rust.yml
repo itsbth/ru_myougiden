@@ -27,10 +27,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: rustup override set ${{ matrix.rust }}
+      - name: Clippy
+        run: cargo clippy --verbose --no-default-features --features "${{ matrix.features }}"
       - name: Build
-        run: cargo build --verbose --features ${{ matrix.features }}
+        run: cargo build --verbose --no-default-features --features "${{ matrix.features }}"
       - name: Run tests
-        run: cargo test --verbose --features ${{ matrix.features }}
+        run: cargo test --verbose --no-default-features --features "${{ matrix.features }}"
   deny:
     runs-on: ubuntu-latest
     steps:
