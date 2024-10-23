@@ -18,17 +18,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      # two features: http, config
-      # we need to test all combinations of these
-      # TODO: Manually specifying it like this does not scale well
-      matrix:
-        features:
-          - ""
-          - http
-          - config
-          - http,config
-        # rust: ["stable", "beta", "nightly"]
-        # this is an app, we don't need to test on beta/nightly
         rust: ["stable"]
 
     steps:
@@ -37,27 +26,13 @@ jobs:
       - run: rustup component add clippy
       - uses: Swatinem/rust-cache@v2
       - name: Clippy
-        run: cargo clippy --verbose --no-default-features --features "${{ matrix.features }}"
+        run: cargo clippy --verbose
       - name: Build
-        run: cargo build --verbose --no-default-features --features "${{ matrix.features }}"
+        run: cargo build --verbose
       - name: Run tests
-        run: cargo test --verbose --no-default-features --features "${{ matrix.features }}"
+        run: cargo test --verbose
   deny:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: EmbarkStudios/cargo-deny-action@v1
-  # TODO: Figure out why demo.ascii differs between local and CI
-  # vhs:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     # We need to build it, otherwise the `cargo run` will take way too long,
-  #     # breaking the vhs script
-  #     # TODO: Move this to the build job if we need to build it anyway?
-  #     - name: Build
-  #       run: cargo build --verbose
-  #     - uses: charmbracelet/vhs-action@v1
-  #       with:
-  #         path: misc/demo.tape
-  #     - run: git diff --exit-code misc/demo.ascii

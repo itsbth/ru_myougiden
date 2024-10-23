@@ -1,4 +1,3 @@
-#![cfg(feature = "config")]
 use std::{io::Read, path::PathBuf};
 
 use anyhow::Result;
