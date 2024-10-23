@@ -190,6 +190,7 @@ fn fetch_jmdict<P: AsRef<Path>>(out_file: P) -> Result<()> {
     Ok(())
 }
 
+#[cfg(test)]
 mod test {
     use super::*;
 
