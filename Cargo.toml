@@ -5,11 +5,6 @@ edition = "2021"
 description = "A tool for searching Japanese text"
 license = "MIT OR Apache-2.0"
 
-[features]
-default = ["http", "config"]
-http = ["dep:reqwest"]
-config = ["dep:toml", "dep:serde"]
-
 [dependencies]
 anyhow = "1.0.71"
 clap = { version = "4.3.4", features = ["derive", "env"] }
@@ -20,10 +15,10 @@ itertools = "0.10.5"
 lindera-core = "0.25.0"
 lindera-dictionary = "0.25.0"
 lindera-tantivy = { version = "0.25.0", features = ["ipadic"] }
-reqwest = { version = "0.11.18", features = ["blocking"], optional = true }
-serde = { version = "1.0.164", optional = true }
+reqwest = { version = "0.11.18", features = ["blocking"] }
+serde = { version = "1.0.164" }
 tantivy = "0.20.2"
-toml = { version = "0.7.5", optional = true }
+toml = { version = "0.7.5" }
 wana_kana = "3.0.0"
 xml = "0.8.10"
 yansi = "0.5.1"

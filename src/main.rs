@@ -15,7 +15,6 @@ use tantivy::schema::Schema;
 use tantivy::{DocAddress, Document, Index, Score, Searcher};
 use yansi::{Color, Paint, Style};
 
-#[cfg(feature = "config")]
 mod config;
 mod indexer;
 
@@ -37,7 +36,6 @@ enum ColorArg {
 #[derive(Parser)]
 #[command(author, version, about)]
 struct Args {
-    #[cfg(feature = "config")]
     #[clap(short, long, global = true)]
     config: Option<PathBuf>,
     #[clap(short, long, global = true, env = "AKASABI_INDEX")]
@@ -65,7 +63,6 @@ enum Command {
             default_value = "JMdict_e.gz"
         )]
         path: String,
-        #[cfg(feature = "http")]
         #[clap(
             short,
             long,
@@ -75,7 +72,6 @@ enum Command {
     },
     Info,
     // Primarily for debugging
-    #[cfg(feature = "config")]
     PrintConfig {
         // index is already a global option
         #[clap(long)]
@@ -97,7 +93,6 @@ fn main() -> Result<()> {
         author: "itsbth".to_string(),
     })?;
 
-    #[cfg(feature = "config")]
     let config = {
         let config_path = args
             .config
@@ -131,10 +126,7 @@ fn main() -> Result<()> {
         }
     }
 
-    #[cfg(feature = "config")]
     let config_index_path = config.index.path.as_ref();
-    #[cfg(not(feature = "config"))]
-    let config_index_path = None;
 
     // Try --index, config file, then default
     let index_path = args
@@ -176,7 +168,6 @@ fn main() -> Result<()> {
                 Paint::green(env!("CARGO_PKG_VERSION"))
             );
             println!("Index path: {}", Paint::blue(index_path.to_str().unwrap()));
-            #[cfg(feature = "config")]
             {
                 // FIXME: This is duplicated from above
                 let config_path = args
@@ -189,7 +180,6 @@ fn main() -> Result<()> {
                 println!("Config: {config:#?}");
             }
         }
-        #[cfg(feature = "config")]
         Command::PrintConfig {
             jmdict_url,
             jmdict_path,
