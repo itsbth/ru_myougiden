@@ -52,7 +52,7 @@ enum Command {
         term: String,
         #[clap(short, long)]
         field: Option<Field>,
-        #[clap(short, long)]
+        #[clap(short = 'm', long)]
         create_if_missing: bool,
     },
     Index {
