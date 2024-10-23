@@ -182,8 +182,6 @@ fn extract_next_string<R: Read>(parser: &mut EventReader<R>) -> String {
     buf
 }
 
-#[cfg(feature = "http")]
-#[allow(dead_code)]
 fn fetch_jmdict<P: AsRef<Path>>(out_file: P) -> Result<()> {
     let url = "https://ftp.monash.edu/pub/nihongo/JMdict_e.gz";
     let mut resp = reqwest::blocking::get(url)?;
@@ -192,7 +190,6 @@ fn fetch_jmdict<P: AsRef<Path>>(out_file: P) -> Result<()> {
     Ok(())
 }
 
-#[cfg(test)]
 mod test {
     use super::*;
 
